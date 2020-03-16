@@ -1,0 +1,17 @@
+{
+    "name": "strayjoke\/dogsms",
+    "description": "a package for send sms",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "strayjoke",
+            "email": "strayjoke@163.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Strayjoke\\Dogsms\\": "src"
+        }
+    }
+}
