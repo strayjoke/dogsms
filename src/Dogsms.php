@@ -1,12 +1,21 @@
 <?php
 
+/*
+ * This file is part of the strayjoke/dogsms.
+ *
+ * (c) strayjoke <strayjoke@163.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
 namespace Strayjoke\Dogsms;
 
 use Closure;
 
 /**
- * class Dogsms
- *
+ * class Dogsms.
  */
 class Dogsms
 {
@@ -17,7 +26,7 @@ class Dogsms
     private $manager;
 
     /**
-     * 构造函数
+     * 构造函数.
      *
      * @param array $config
      */
@@ -30,8 +39,9 @@ class Dogsms
      * 发送短信
      *
      * @param [string] $phone
-     * @param [array] $templateCode
-     * @param [array] $params
+     * @param [array]  $templateCode
+     * @param [array]  $params
+     *
      * @return array
      */
     public function sendSms($phone, $templateCode, $params)
@@ -43,20 +53,21 @@ class Dogsms
             try {
                 $results[$name] = [
                     'gateway' => $name,
-                    'status'  => self::STATUS_SUCCESS,
-                    'result'  => $manager->gateway($name)->sendSms($phone, $templateCode[$name], $params),
+                    'status' => self::STATUS_SUCCESS,
+                    'result' => $manager->gateway($name)->sendSms($phone, $templateCode[$name], $params),
                 ];
+
                 break;
             } catch (\Exception $e) {
                 $results[$name] = [
-                    'gateway'   => $name,
-                    'status'    => self::STATUS_FAILURE,
+                    'gateway' => $name,
+                    'status' => self::STATUS_FAILURE,
                     'exception' => $e,
                 ];
             } catch (\Throwable $e) {
                 $results[$name] = [
-                    'gateway'   => $name,
-                    'status'    => self::STATUS_FAILURE,
+                    'gateway' => $name,
+                    'status' => self::STATUS_FAILURE,
                     'exception' => $e,
                 ];
             }
@@ -66,10 +77,11 @@ class Dogsms
     }
 
     /**
-     * 扩展
+     * 扩展.
      *
      * @param [string] $name
-     * @param Closure $callback
+     * @param Closure  $callback
+     *
      * @return $this
      */
     public function extend($name, Closure $callback)

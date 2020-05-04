@@ -1,12 +1,21 @@
 <?php
 
+/*
+ * This file is part of the strayjoke/dogsms.
+ *
+ * (c) strayjoke <strayjoke@163.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
 namespace Strayjoke\Dogsms\Traits;
 
 use GuzzleHttp\Client;
 
 /**
- *  trait HasHttpRequest
- *
+ *  trait HasHttpRequest.
  */
 trait HasHttpRequest
 {
@@ -15,7 +24,8 @@ trait HasHttpRequest
      *
      * @param [string] $method
      * @param [string] $uri
-     * @param [array] $options
+     * @param [array]  $options
+     *
      * @return array
      */
     private function request($method, $uri, array $options)
@@ -29,7 +39,8 @@ trait HasHttpRequest
      * post 请求
      *
      * @param [string] $uri
-     * @param [array] $options
+     * @param [array]  $options
+     *
      * @return array
      */
     private function post($uri, $options)

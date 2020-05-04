@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of the strayjoke/dogsms.
+ *
+ * (c) strayjoke <strayjoke@163.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
 namespace Strayjoke\Dogsms\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -26,9 +36,9 @@ class SmsManagerTest extends TestCase
             ],
             'gateways' => [
                 'alibabaCloud' => [
-                    'access_key_id'     => 'mock-id',
+                    'access_key_id' => 'mock-id',
                     'access_key_secret' => 'mock-secret',
-                    'sign_name'         => 'mock-sign',
+                    'sign_name' => 'mock-sign',
                 ],
             ],
         ]);
