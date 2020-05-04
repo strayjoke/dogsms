@@ -9,7 +9,7 @@ class Config implements ArrayAccess
     private $config = [];
 
     /**
-     * 构造函数
+     * 构造函数.
      *
      * @param array $config
      */
@@ -19,10 +19,11 @@ class Config implements ArrayAccess
     }
 
     /**
-     * 获取配置信息
+     * 获取配置信息.
      *
      * @param [string] $key
-     * @param [mixed] $default
+     * @param [mixed]  $default
+     *
      * @return mixed
      */
     public function get($key, $default = null)
@@ -49,9 +50,10 @@ class Config implements ArrayAccess
     }
 
     /**
-     * 实现 ArrayAccess 接口
+     * 实现 ArrayAccess 接口.
      *
      * @param [mixed] $offset
+     *
      * @return bool
      */
     public function offsetExists($offset)
@@ -60,10 +62,12 @@ class Config implements ArrayAccess
     }
 
     /**
-     * 实现 ArrayAccess 接口
+     * 实现 ArrayAccess 接口.
      *
      * @param [mixed] $offset
+     *
      * @return mixed
+     *
      * @since
      * @see
      */
@@ -73,11 +77,13 @@ class Config implements ArrayAccess
     }
 
     /**
-     * 实现 ArrayAccess 接口
+     * 实现 ArrayAccess 接口.
      *
      * @param [string] $offset
-     * @param [mixed] $value
+     * @param [mixed]  $value
+     *
      * @return void
+     *
      * @since
      * @see
      */
@@ -89,10 +95,12 @@ class Config implements ArrayAccess
     }
 
     /**
-     * 实现 ArrayAccess 接口
+     * 实现 ArrayAccess 接口.
      *
      * @param [string] $offset
+     *
      * @return void
+     *
      * @since
      * @see
      */
