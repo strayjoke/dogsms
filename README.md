@@ -41,6 +41,7 @@ $config =[
 #### 调用方法
 ```
 use Strayjoke\Dogsms\Dogsms;
+
 $sms = new Dogsms($config);
 
 $sms->sendSms(17533333333, 
