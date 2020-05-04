@@ -4,8 +4,14 @@ namespace Strayjoke\Dogsms\Config;
 
 use ArrayAccess;
 
+/**
+ * class Config
+ */
 class Config implements ArrayAccess
 {
+    /**
+     * @var array
+     */
     private $config = [];
 
     /**
@@ -67,9 +73,6 @@ class Config implements ArrayAccess
      * @param [mixed] $offset
      *
      * @return mixed
-     *
-     * @since
-     * @see
      */
     public function offsetGet($offset)
     {
@@ -84,8 +87,6 @@ class Config implements ArrayAccess
      *
      * @return void
      *
-     * @since
-     * @see
      */
     public function offsetSet($offset, $value)
     {
@@ -100,9 +101,6 @@ class Config implements ArrayAccess
      * @param [string] $offset
      *
      * @return void
-     *
-     * @since
-     * @see
      */
     public function offsetUnset($offset)
     {

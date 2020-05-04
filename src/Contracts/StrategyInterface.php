@@ -2,6 +2,10 @@
 
 namespace Strayjoke\Dogsms\Contracts;
 
+/**
+ * interface StrategyInterface
+ *
+ */
 interface StrategyInterface
 {
     /**

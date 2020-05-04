@@ -4,6 +4,10 @@ namespace Strayjoke\Dogsms;
 
 use Closure;
 
+/**
+ * class Dogsms
+ *
+ */
 class Dogsms
 {
     const STATUS_SUCCESS = 'success';
@@ -12,12 +16,24 @@ class Dogsms
 
     private $manager;
 
+    /**
+     * 构造函数
+     *
+     * @param array $config
+     */
     public function __construct(array $config = [])
     {
         $this->manager = new SmsManager($config);
     }
 
-    //发送短信
+    /**
+     * 发送短信
+     *
+     * @param [string] $phone
+     * @param [array] $templateCode
+     * @param [array] $params
+     * @return array
+     */
     public function sendSms($phone, $templateCode, $params)
     {
         $results = [];
@@ -49,7 +65,13 @@ class Dogsms
         return $results;
     }
 
-    //自定义扩展
+    /**
+     * 扩展
+     *
+     * @param [string] $name
+     * @param Closure $callback
+     * @return $this
+     */
     public function extend($name, Closure $callback)
     {
         $this->manager->extend($name, $callback);

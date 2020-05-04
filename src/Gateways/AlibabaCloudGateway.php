@@ -6,6 +6,10 @@ use Strayjoke\Dogsms\Contracts\GatewayInterface;
 use Strayjoke\Dogsms\Exceptions\GatewayErrorException;
 use Strayjoke\Dogsms\Traits\HasHttpRequest;
 
+/**
+ * 阿里云网关
+ *
+ */
 class AlibabaCloudGateway implements GatewayInterface
 {
     use HasHttpRequest;
@@ -29,6 +33,11 @@ class AlibabaCloudGateway implements GatewayInterface
     private $options = [];
     private $format = 'JSON';
 
+    /**
+     * 构造函数
+     *
+     * @param array $config
+     */
     public function __construct(array $config)
     {
         $this->options = [
@@ -43,11 +52,20 @@ class AlibabaCloudGateway implements GatewayInterface
         $this->signName = $config['sign_name'];
     }
 
+    /**
+     * 发送短信接口
+     *
+     * @param [string] $phone
+     * @param string $templateCode
+     * @param array $params
+     * @return array
+     * @throws \Strayjoke\Dogsms\Exceptions\GatewayErrorException
+     */
     public function sendSms($phone, $templateCode, array $params)
     {
         $this->setOptions($phone, $templateCode, $params);
 
-        $endpoint = $this->scheme.'://'.$this->host;
+        $endpoint = $this->scheme . '://' . $this->host;
 
         try {
             $response = $this->request($this->method, $endpoint, $this->options);
@@ -66,20 +84,33 @@ class AlibabaCloudGateway implements GatewayInterface
         }
     }
 
+    /**
+     * 签名
+     *
+     * @return string
+     */
     public function signature()
     {
         $string = $this->rpcString($this->method, $this->options['form_params']);
 
-        return base64_encode(hash_hmac('sha1', $string, $this->accessKeySecret.'&', true));
+        return base64_encode(hash_hmac('sha1', $string, $this->accessKeySecret . '&', true));
     }
 
+    /**
+     * 设置属性
+     *
+     * @param [string] $phone
+     * @param [string] $templateCode
+     * @param [array] $params
+     * @return void
+     */
     public function setOptions($phone, $templateCode, $params)
     {
         $this->options['form_params']['RegionId'] = $this->regionId;
         $this->options['form_params']['Format'] = $this->format;
         $this->options['form_params']['SignatureMethod'] = $this->signatureMethod;
         $this->options['form_params']['SignatureVersion'] = $this->signatureVersion;
-        $this->options['form_params']['SignatureNonce'] = md5($this->product.$this->regionId.uniqid(md5(microtime(true)), true));
+        $this->options['form_params']['SignatureNonce'] = md5($this->product . $this->regionId . uniqid(md5(microtime(true)), true));
         $this->options['form_params']['Timestamp'] = gmdate($this->dateTimeFormat);
         $this->options['form_params']['Action'] = $this->setAction()->getAction();
         $this->options['form_params']['AccessKeyId'] = $this->accessKeyId;
@@ -98,6 +129,12 @@ class AlibabaCloudGateway implements GatewayInterface
         }
     }
 
+    /**
+     * 设置属性 action
+     *
+     * @param string $action
+     * @return void
+     */
     public function setAction($action = 'SendSms')
     {
         $this->action = $action;
@@ -105,12 +142,23 @@ class AlibabaCloudGateway implements GatewayInterface
         return $this;
     }
 
+    /**
+     * 获取属性 action
+     *
+     * @return string
+     */
     public function getAction()
     {
         return $this->action;
     }
 
-    public function alibabacloudToString($data)
+    /**
+     * 签名-部分
+     *
+     * @param [array] $data
+     * @return string
+     */
+    private function alibabacloudToString($data)
     {
         $string = '';
         foreach ($data as $key => $value) {
@@ -125,17 +173,30 @@ class AlibabaCloudGateway implements GatewayInterface
         return $string;
     }
 
+    /**
+     * 签名-部分
+     *
+     * @param [string] $method
+     * @param [array] $params
+     * @return void
+     */
     private function rpcString($method, $params)
     {
         ksort($params);
         $canonicalized = '';
         foreach ($params as $key => $value) {
-            $canonicalized .= '&'.$this->percentEncode($key).'='.$this->percentEncode($value);
+            $canonicalized .= '&' . $this->percentEncode($key) . '=' . $this->percentEncode($value);
         }
 
-        return $method.'&%2F&'.$this->percentEncode(substr($canonicalized, 1));
+        return $method . '&%2F&' . $this->percentEncode(substr($canonicalized, 1));
     }
 
+    /**
+     * 签名-部分
+     *
+     * @param [type] $string
+     * @return string
+     */
     private function percentEncode($string)
     {
         $result = urlencode($string);

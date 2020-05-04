@@ -20,6 +20,11 @@ class SmsManager
     //自定义扩展
     private $customCreators = [];
 
+    /**
+     * 构造函数
+     *
+     * @param array $config
+     */
     public function __construct(array $config = [])
     {
         $this->config = new Config($config);
@@ -41,6 +46,12 @@ class SmsManager
         return $this;
     }
 
+    /**
+     * 网关
+     *
+     * @param [string] $name
+     * @return array
+     */
     public function gateway($name)
     {
         if (!isset($this->gateways[$name])) {
@@ -56,6 +67,8 @@ class SmsManager
      * @param [string] $strategy
      *
      * @return Strayjoke\Dogsms\Contracts\StrategyInterface
+     * 
+     * @throws \Strayjoke\Dogsms\Exceptions\InvalidArgumentException 
      */
     public function strategy($strategy = null)
     {
@@ -64,7 +77,7 @@ class SmsManager
         }
 
         if (!\class_exists($strategy)) {
-            $strategy = __NAMESPACE__.'\Strategies\\'.ucfirst($strategy).'php';
+            $strategy = __NAMESPACE__ . '\Strategies\\' . ucfirst($strategy) . 'php';
         }
 
         if (!class_exists($strategy)) {
@@ -78,6 +91,13 @@ class SmsManager
         return $this->strategy;
     }
 
+    /**
+     * 实例化网关
+     *
+     * @param [string] $name
+     * @return \Strayjoke\Dogsms\Contracts\GatewayInterface
+     * @throws \Strayjoke\Dogsms\Exceptions\InvalidArgumentException 
+     */
     public function createGateway($name)
     {
         //自定义扩展里读取
@@ -97,11 +117,23 @@ class SmsManager
         return $gateway;
     }
 
+    /**
+     * 自定义网关
+     *
+     * @param [string] $name
+     * @return mixed
+     */
     public function callCustomCreator($name)
     {
         return \call_user_func($this->customCreators[$name], $this->config->get("gateways.{$name}", []));
     }
 
+    /**
+     * 格式化网关
+     *
+     * @param [string] $name
+     * @return string
+     */
     public function formatGatewayClassName($name)
     {
         if (\class_exists($name) && \in_array(GatewayInterface::class, \class_implements($name))) {
@@ -110,9 +142,17 @@ class SmsManager
 
         $name = \ucfirst(\str_replace(['-', '_', ''], '', $name));
 
-        return __NAMESPACE__."\\Gateways\\{$name}Gateway";
+        return __NAMESPACE__ . "\\Gateways\\{$name}Gateway";
     }
 
+    /**
+     * 网关实例
+     *
+     * @param string $gateway
+     * @param array  $config
+     * @return \Overtrue\EasySms\Contracts\GatewayInterface
+     * @throws \Overtrue\EasySms\Exceptions\InvalidArgumentException
+     */
     public function makeGateway($className, $config)
     {
         if (!\class_exists($className) && !\in_array(GatewayInterface::class, \class_implements($className))) {
@@ -122,6 +162,11 @@ class SmsManager
         return new $className($config);
     }
 
+    /**
+     * 网关排序
+     *
+     * @return array
+     */
     public function sortGateways()
     {
         $strategy = $this->strategy;
