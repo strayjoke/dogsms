@@ -13,6 +13,7 @@ $ composer require strayjoke/dogsms -vvv
 目前只支持国内短信(+86),不支持群发短信。
 
 #### 配置
+```
 $config =[
     // 默认发送配置
     'default' => [
@@ -35,8 +36,10 @@ $config =[
         ]
     ]
 ];
+```
 
 #### 调用方法
+```
 use Strayjoke\Dogsms\Dogsms;
 $sms = new Dogsms($config);
 
@@ -49,16 +52,7 @@ $sms->sendSms(17533333333,
         'code' =>1234 //短信模板的参数，阿里云和腾讯云公用参数。其中阿里云短信需要提供数组key， 腾讯云不需要提供。
     ] 
 );
-
-## Contributing
-
-You can contribute in one of three ways:
-
-1. File bug reports using the [issue tracker](https://github.com/strayjoke/dogsms/issues).
-2. Answer questions or fix bugs on the [issue tracker](https://github.com/strayjoke/dogsms/issues).
-3. Contribute new features or update the wiki.
-
-_The code contribution process is not very formal. You just need to make sure that you follow the PSR-0, PSR-1, and PSR-2 coding guidelines. Any new code contributions must be accompanied by unit tests where applicable._
+```
 
 ## License
 
