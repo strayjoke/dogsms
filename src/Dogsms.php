@@ -27,24 +27,25 @@ class Dogsms
             try {
                 $results[$name] = [
                     'gateway' => $name,
-                    'status' => self::STATUS_SUCCESS,
-                    'result' => $manager->gateway($name)->sendSms($phone, $templateCode[$name], $params)
+                    'status'  => self::STATUS_SUCCESS,
+                    'result'  => $manager->gateway($name)->sendSms($phone, $templateCode[$name], $params),
                 ];
                 break;
             } catch (\Exception $e) {
                 $results[$name] = [
-                    'gateway' => $name,
-                    'status' => self::STATUS_FAILURE,
+                    'gateway'   => $name,
+                    'status'    => self::STATUS_FAILURE,
                     'exception' => $e,
                 ];
             } catch (\Throwable $e) {
                 $results[$name] = [
-                    'gateway' => $name,
-                    'status' => self::STATUS_FAILURE,
+                    'gateway'   => $name,
+                    'status'    => self::STATUS_FAILURE,
                     'exception' => $e,
                 ];
             }
         }
+
         return $results;
     }
 
