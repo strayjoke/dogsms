@@ -1,6 +1,8 @@
 <h1 align="center"> dogsms </h1>
 
 <p align="center"> 发送短信的php开发包, 支持阿里云短信和腾讯云短信</p>
+![travis-ci](https://travis-ci.org/strayjoke/dogsms.svg?branch=master)
+![StyleCI build status](https://github.styleci.io/repos/247695001/shield) 
 
 
 ## 安装
