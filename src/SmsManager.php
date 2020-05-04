@@ -3,11 +3,11 @@
 namespace Strayjoke\Dogsms;
 
 use Closure;
+use Strayjoke\Dogsms\Config\Config;
 use Strayjoke\Dogsms\Contracts\GatewayInterface;
 use Strayjoke\Dogsms\Contracts\StrategyInterface;
-use Strayjoke\Dogsms\Strategies\RandomStrategy;
 use Strayjoke\Dogsms\Exceptions\InvalidArgumentException;
-use Strayjoke\Dogsms\Config\Config;
+use Strayjoke\Dogsms\Strategies\RandomStrategy;
 
 class SmsManager
 {
@@ -27,15 +27,17 @@ class SmsManager
     }
 
     /**
-     * 自定义扩展短信驱动
+     * 自定义扩展短信驱动.
      *
-     * @param string $name
+     * @param string  $name
      * @param Closure $callback
+     *
      * @return $this
      */
     public function extend($name, Closure $callback)
     {
         $this->customCreators[$name] = $callback;
+
         return $this;
     }
 
@@ -49,9 +51,10 @@ class SmsManager
     }
 
     /**
-     * 获取策略实例
+     * 获取策略实例.
      *
      * @param [string] $strategy
+     *
      * @return Strayjoke\Dogsms\Contracts\StrategyInterface
      */
     public function strategy($strategy = null)
@@ -61,7 +64,7 @@ class SmsManager
         }
 
         if (!\class_exists($strategy)) {
-            $strategy = __NAMESPACE__ . '\Strategies\\' . ucfirst($strategy) . 'php';
+            $strategy = __NAMESPACE__.'\Strategies\\'.ucfirst($strategy).'php';
         }
 
         if (!class_exists($strategy)) {
@@ -107,7 +110,7 @@ class SmsManager
 
         $name = \ucfirst(\str_replace(['-', '_', ''], '', $name));
 
-        return __NAMESPACE__ . "\\Gateways\\{$name}Gateway";
+        return __NAMESPACE__."\\Gateways\\{$name}Gateway";
     }
 
     public function makeGateway($className, $config)

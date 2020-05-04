@@ -3,8 +3,8 @@
 namespace Strayjoke\Dogsms\Gateways;
 
 use Strayjoke\Dogsms\Contracts\GatewayInterface;
-use Strayjoke\Dogsms\Traits\HasHttpRequest;
 use Strayjoke\Dogsms\Exceptions\GatewayErrorException;
+use Strayjoke\Dogsms\Traits\HasHttpRequest;
 
 class AlibabaCloudGateway implements GatewayInterface
 {
@@ -16,7 +16,7 @@ class AlibabaCloudGateway implements GatewayInterface
     private $scheme = 'http';
     private $host = 'dysmsapi.aliyuncs.com';
     private $regionId = 'cn-hangzhou';
-    private $signatureMethod = "HMAC-SHA1";
+    private $signatureMethod = 'HMAC-SHA1';
     private $dateTimeFormat = "Y-m-d\TH:i:s\Z";
     private $signatureVersion = '1.0';
     private $product = 'Dysmsapi';
@@ -32,22 +32,22 @@ class AlibabaCloudGateway implements GatewayInterface
     public function __construct(array $config)
     {
         $this->options = [
-            'http_errors' => false,
+            'http_errors'     => false,
             'connect_timeout' => $this->connectTimeout,
-            'timeout' => $this->timeout,
-            'verify' => $this->verify,
-            'headers' => []
+            'timeout'         => $this->timeout,
+            'verify'          => $this->verify,
+            'headers'         => [],
         ];
         $this->accessKeyId = $config['access_key_id'];
         $this->accessKeySecret = $config['access_key_secret'];
         $this->signName = $config['sign_name'];
     }
 
-    public function sendSms($phone,  $templateCode, array $params)
+    public function sendSms($phone, $templateCode, array $params)
     {
         $this->setOptions($phone, $templateCode, $params);
 
-        $endpoint = $this->scheme . '://' . $this->host;
+        $endpoint = $this->scheme.'://'.$this->host;
 
         try {
             $response = $this->request($this->method, $endpoint, $this->options);
@@ -56,9 +56,10 @@ class AlibabaCloudGateway implements GatewayInterface
             }
 
             $tmpRes = json_decode($response->getBody(), true);
-            if ($tmpRes["Code"] !== "OK") {
-                throw new GatewayErrorException($tmpRes["Message"]);
+            if ($tmpRes['Code'] !== 'OK') {
+                throw new GatewayErrorException($tmpRes['Message']);
             }
+
             return $tmpRes;
         } catch (\Exception $e) {
             throw new GatewayErrorException($e->getMessage());
@@ -68,18 +69,19 @@ class AlibabaCloudGateway implements GatewayInterface
     public function signature()
     {
         $string = $this->rpcString($this->method, $this->options['form_params']);
-        return base64_encode(hash_hmac('sha1', $string, $this->accessKeySecret . '&', true));
+
+        return base64_encode(hash_hmac('sha1', $string, $this->accessKeySecret.'&', true));
     }
 
     public function setOptions($phone, $templateCode, $params)
     {
-        $this->options['form_params']['RegionId']         = $this->regionId;
-        $this->options['form_params']['Format']           = $this->format;
-        $this->options['form_params']['SignatureMethod']  = $this->signatureMethod;
+        $this->options['form_params']['RegionId'] = $this->regionId;
+        $this->options['form_params']['Format'] = $this->format;
+        $this->options['form_params']['SignatureMethod'] = $this->signatureMethod;
         $this->options['form_params']['SignatureVersion'] = $this->signatureVersion;
-        $this->options['form_params']['SignatureNonce']   = md5($this->product . $this->regionId . uniqid(md5(microtime(true)), true));
-        $this->options['form_params']['Timestamp']        = gmdate($this->dateTimeFormat);
-        $this->options['form_params']['Action']           = $this->setAction()->getAction();
+        $this->options['form_params']['SignatureNonce'] = md5($this->product.$this->regionId.uniqid(md5(microtime(true)), true));
+        $this->options['form_params']['Timestamp'] = gmdate($this->dateTimeFormat);
+        $this->options['form_params']['Action'] = $this->setAction()->getAction();
         $this->options['form_params']['AccessKeyId'] = $this->accessKeyId;
         $this->options['form_params']['Version'] = $this->version;
         $this->options['form_params']['PhoneNumbers'] = $phone;
@@ -89,7 +91,6 @@ class AlibabaCloudGateway implements GatewayInterface
 
         $this->options['form_params']['Signature'] = $this->signature();
 
-
         if (isset($this->options['form_params'])) {
             $this->options['form_params'] = \GuzzleHttp\Psr7\parse_query(
                 $this->alibabacloudToString($this->options['form_params'])
@@ -97,9 +98,10 @@ class AlibabaCloudGateway implements GatewayInterface
         }
     }
 
-    public function setAction($action = "SendSms")
+    public function setAction($action = 'SendSms')
     {
         $this->action = $action;
+
         return $this;
     }
 
@@ -128,10 +130,10 @@ class AlibabaCloudGateway implements GatewayInterface
         ksort($params);
         $canonicalized = '';
         foreach ($params as $key => $value) {
-            $canonicalized .= '&' . $this->percentEncode($key) . '=' . $this->percentEncode($value);
+            $canonicalized .= '&'.$this->percentEncode($key).'='.$this->percentEncode($value);
         }
 
-        return $method . '&%2F&' . $this->percentEncode(substr($canonicalized, 1));
+        return $method.'&%2F&'.$this->percentEncode(substr($canonicalized, 1));
     }
 
     private function percentEncode($string)

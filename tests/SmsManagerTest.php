@@ -3,8 +3,8 @@
 namespace Strayjoke\Dogsms\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Strayjoke\Dogsms\SmsManager;
 use Strayjoke\Dogsms\Gateways\AlibabaCloudGateway;
+use Strayjoke\Dogsms\SmsManager;
 
 class SmsManagerTest extends TestCase
 {
@@ -22,15 +22,15 @@ class SmsManagerTest extends TestCase
     {
         $manager = new SmsManager([
             'default' => [
-                'gateways' => ['alibabaCloud']
+                'gateways' => ['alibabaCloud'],
             ],
             'gateways' => [
                 'alibabaCloud' => [
-                    'access_key_id' => 'mock-id',
+                    'access_key_id'     => 'mock-id',
                     'access_key_secret' => 'mock-secret',
-                    'sign_name' => 'mock-sign',
-                ]
-            ]
+                    'sign_name'         => 'mock-sign',
+                ],
+            ],
         ]);
         $tempGateway = $manager->gateway('alibabaCloud');
         $this->assertInstanceOf(AlibabaCloudGateway::class, $tempGateway);

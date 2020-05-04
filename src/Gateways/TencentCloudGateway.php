@@ -3,8 +3,8 @@
 namespace Strayjoke\Dogsms\Gateways;
 
 use Strayjoke\Dogsms\Contracts\GatewayInterface;
-use Strayjoke\Dogsms\Traits\HasHttpRequest;
 use Strayjoke\Dogsms\Exceptions\GatewayErrorException;
+use Strayjoke\Dogsms\Traits\HasHttpRequest;
 
 class TencentCloudGateway implements GatewayInterface
 {
@@ -30,11 +30,11 @@ class TencentCloudGateway implements GatewayInterface
     public function __construct(array $config)
     {
         $this->options = [
-            'http_errors' => false,
+            'http_errors'     => false,
             'connect_timeout' => $this->connectTimeout,
-            'timeout' => $this->timeout,
-            'verify' => $this->verify,
-            'headers' => []
+            'timeout'         => $this->timeout,
+            'verify'          => $this->verify,
+            'headers'         => [],
         ];
         $this->secretId = $config['secret_id'];
         $this->secretKey = $config['secret_key'];
@@ -46,7 +46,7 @@ class TencentCloudGateway implements GatewayInterface
     {
         $this->setOptions($phone, $templateCode, $params);
 
-        $endpoint = $this->scheme . '://' . self::HOST;
+        $endpoint = $this->scheme.'://'.self::HOST;
 
         try {
             $response = $this->post($endpoint, $this->options);
@@ -54,10 +54,11 @@ class TencentCloudGateway implements GatewayInterface
                 throw new GatewayErrorException($response->getReasonPhrase(), $response->getBody());
             }
 
-            $tmpRes = json_decode($response->getBody(), true)["Response"];
-            if (array_key_exists("Error", $tmpRes)) {
-                throw new GatewayErrorException($tmpRes["Error"]["Message"], $tmpRes["Error"]["Code"]);
+            $tmpRes = json_decode($response->getBody(), true)['Response'];
+            if (array_key_exists('Error', $tmpRes)) {
+                throw new GatewayErrorException($tmpRes['Error']['Message'], $tmpRes['Error']['Code']);
             }
+
             return $tmpRes;
         } catch (\Exception $e) {
             throw new GatewayErrorException($e->getMessage());
@@ -71,15 +72,15 @@ class TencentCloudGateway implements GatewayInterface
         $this->options['headers']['X-TC-Version'] = $this->version;
         $this->options['headers']['X-TC-Region'] = $this->region;
         $this->options['headers']['X-TC-Timestamp'] = time();
-        $this->options['headers']['Content-Type'] = "application/json";
-        $this->options['form_params']['PhoneNumberSet'] = ['+86' . $phone];
+        $this->options['headers']['Content-Type'] = 'application/json';
+        $this->options['form_params']['PhoneNumberSet'] = ['+86'.$phone];
         $this->options['form_params']['TemplateID'] = $templateCode;
         $this->options['form_params']['SmsSdkAppid'] = $this->smsSdkAppId;
         $this->options['form_params']['Sign'] = $this->signName;
         $this->options['form_params']['TemplateParamSet'] = array_values($params);
-        $this->options['form_params']['ExtendCode'] = "0";
-        $this->options['form_params']['SessionContext'] = "";
-        $this->options['form_params']['SenderId'] = "";
+        $this->options['form_params']['ExtendCode'] = '0';
+        $this->options['form_params']['SessionContext'] = '';
+        $this->options['form_params']['SenderId'] = '';
 
         $payload = json_encode($this->options['form_params'], JSON_UNESCAPED_UNICODE);
         $this->options['headers']['Authorization'] = $this->signature($payload);
@@ -91,46 +92,49 @@ class TencentCloudGateway implements GatewayInterface
     public function signature($payload)
     {
         $canonicalURI = '/';  //uri参数
-        $canonicalQueryString = ""; //查询字符串
-        $payloadHash = hash("SHA256", $payload);
-        $canonicalHeaders = "content-type:" . $this->options['headers']['Content-Type'] . "\n" .
-            "host:" . self::HOST . "\n";
-        $signedHeaders = "content-type;host";
+        $canonicalQueryString = ''; //查询字符串
+        $payloadHash = hash('SHA256', $payload);
+        $canonicalHeaders = 'content-type:'.$this->options['headers']['Content-Type']."\n".
+            'host:'.self::HOST."\n";
+        $signedHeaders = 'content-type;host';
 
-        $canonicalRequest = SELF::METHOD . "\n" .
-            $canonicalURI . "\n" .
-            $canonicalQueryString . "\n" .
-            $canonicalHeaders . "\n" .
-            $signedHeaders . "\n" .
+        $canonicalRequest = self::METHOD."\n".
+            $canonicalURI."\n".
+            $canonicalQueryString."\n".
+            $canonicalHeaders."\n".
+            $signedHeaders."\n".
             $payloadHash;
-        $algo = "TC3-HMAC-SHA256";
-        $date = gmdate("Y-m-d", $this->options['headers']['X-TC-Timestamp']);
-        $service = explode(".", $this->options['headers']['Host'])[0];
-        $credentialScope = $date . "/" . $service . "/tc3_request";
-        $hashedCanonicalRequest = hash("SHA256", $canonicalRequest);
-        $str2sign = $algo . "\n" .
-            $this->options['headers']['X-TC-Timestamp'] . "\n" .
-            $credentialScope . "\n" .
+        $algo = 'TC3-HMAC-SHA256';
+        $date = gmdate('Y-m-d', $this->options['headers']['X-TC-Timestamp']);
+        $service = explode('.', $this->options['headers']['Host'])[0];
+        $credentialScope = $date.'/'.$service.'/tc3_request';
+        $hashedCanonicalRequest = hash('SHA256', $canonicalRequest);
+        $str2sign = $algo."\n".
+            $this->options['headers']['X-TC-Timestamp']."\n".
+            $credentialScope."\n".
             $hashedCanonicalRequest;
         $signature = $this->signTC3($this->secretKey, $date, $service, $str2sign);
 
-        $auth = $algo .
-            " Credential=" . $this->secretId . "/" . $credentialScope .
-            ", SignedHeaders=content-type;host, Signature=" . $signature;
+        $auth = $algo.
+            ' Credential='.$this->secretId.'/'.$credentialScope.
+            ', SignedHeaders=content-type;host, Signature='.$signature;
+
         return $auth;
     }
 
     private function signTC3($skey, $date, $service, $str2sign)
     {
-        $dateKey = hash_hmac("SHA256", $date, "TC3" . $skey, true);
-        $serviceKey = hash_hmac("SHA256", $service, $dateKey, true);
-        $reqKey = hash_hmac("SHA256", "tc3_request", $serviceKey, true);
-        return hash_hmac("SHA256", $str2sign, $reqKey);
+        $dateKey = hash_hmac('SHA256', $date, 'TC3'.$skey, true);
+        $serviceKey = hash_hmac('SHA256', $service, $dateKey, true);
+        $reqKey = hash_hmac('SHA256', 'tc3_request', $serviceKey, true);
+
+        return hash_hmac('SHA256', $str2sign, $reqKey);
     }
 
-    public function setAction($action = "SendSms")
+    public function setAction($action = 'SendSms')
     {
         $this->action = $action;
+
         return $this;
     }
 
