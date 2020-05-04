@@ -46,17 +46,19 @@ class TencentCloudGateway implements GatewayInterface
     {
         $this->setOptions($phone, $templateCode, $params);
 
-        $endpoint = $this->scheme . '://' . $this->host;
+        $endpoint = $this->scheme . '://' . self::HOST;
 
         try {
             $response = $this->post($endpoint, $this->options);
             if ($response->getStatusCode() !== 200) {
                 throw new GatewayErrorException($response->getReasonPhrase(), $response->getBody());
             }
+
             $tmpRes = json_decode($response->getBody(), true)["Response"];
             if (array_key_exists("Error", $tmpRes)) {
                 throw new GatewayErrorException($tmpRes["Error"]["Message"], $tmpRes["Error"]["Code"]);
             }
+            return $tmpRes;
         } catch (\Exception $e) {
             throw new GatewayErrorException($e->getMessage());
         }
@@ -92,7 +94,7 @@ class TencentCloudGateway implements GatewayInterface
         $canonicalQueryString = ""; //查询字符串
         $payloadHash = hash("SHA256", $payload);
         $canonicalHeaders = "content-type:" . $this->options['headers']['Content-Type'] . "\n" .
-            "host:" . $this->options['headers']['Host'] . "\n";
+            "host:" . self::HOST . "\n";
         $signedHeaders = "content-type;host";
 
         $canonicalRequest = SELF::METHOD . "\n" .

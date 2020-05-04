@@ -50,7 +50,16 @@ class AlibabaCloudGateway implements GatewayInterface
         $endpoint = $this->scheme . '://' . $this->host;
 
         try {
-            return $this->request($this->method, $endpoint, $this->options);
+            $response = $this->request($this->method, $endpoint, $this->options);
+            if ($response->getStatusCode() !== 200) {
+                throw new GatewayErrorException($response->getReasonPhrase(), $response->getBody());
+            }
+
+            $tmpRes = json_decode($response->getBody(), true);
+            if ($tmpRes["Code"] !== "OK") {
+                throw new GatewayErrorException($tmpRes["Message"]);
+            }
+            return $tmpRes;
         } catch (\Exception $e) {
             throw new GatewayErrorException($e->getMessage());
         }

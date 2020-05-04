@@ -28,7 +28,7 @@ class Dogsms
                 $results[$name] = [
                     'gateway' => $name,
                     'status' => self::STATUS_SUCCESS,
-                    'result' => $manager->gateway($name)->sendSms($phone, $templateCode, $params)
+                    'result' => $manager->gateway($name)->sendSms($phone, $templateCode[$name], $params)
                 ];
                 break;
             } catch (\Exception $e) {
@@ -44,8 +44,8 @@ class Dogsms
                     'exception' => $e,
                 ];
             }
-            return $results;
         }
+        return $results;
     }
 
     //自定义扩展
