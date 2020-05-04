@@ -1,11 +1,21 @@
 <?php
 
+/*
+ * This file is part of the strayjoke/dogsms.
+ *
+ * (c) strayjoke <strayjoke@163.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
 namespace Strayjoke\Dogsms\Config;
 
 use ArrayAccess;
 
 /**
- * class Config
+ * class Config.
  */
 class Config implements ArrayAccess
 {
@@ -84,9 +94,6 @@ class Config implements ArrayAccess
      *
      * @param [string] $offset
      * @param [mixed]  $value
-     *
-     * @return void
-     *
      */
     public function offsetSet($offset, $value)
     {
@@ -99,8 +106,6 @@ class Config implements ArrayAccess
      * 实现 ArrayAccess 接口.
      *
      * @param [string] $offset
-     *
-     * @return void
      */
     public function offsetUnset($offset)
     {
